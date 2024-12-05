@@ -21,6 +21,10 @@ sales_prediction_model = api.model('SalesPrediction', {
     'sales_prediction': fields.Float(required=True, description='The predicted sales')
 })
 
+
+@app.route('/')
+def home():
+    return "Inventory Managment API"
 # Inference endpoint
 @api.route('/single-sku-predict/')
 class PredictSingleSKU(Resource):

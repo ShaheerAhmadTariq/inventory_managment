@@ -173,3 +173,4 @@ replenishment.parquet
 sales.parquet
 datasets
 models
+.vercel
