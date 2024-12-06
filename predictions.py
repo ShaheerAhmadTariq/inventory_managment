@@ -119,7 +119,7 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
 
         # Step 6: Load the CatBoost model and make predictions
         model = CatBoostRegressor()
-        model.load_model('../catboost_sales_forecasting/catboost_model_2.4.cbm')
+        model.load_model('./models/catboost_model_2.4.cbm')
         predictions = model.predict(X_new)
         # Sum the predictions for the first 7, 15, 30, and 60 days
         if time_interval >= 7:
