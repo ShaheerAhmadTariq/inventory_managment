@@ -1,4 +1,2 @@
-flask
-pydantic
-pandas
-flask-restx
+fastapi
+uvicorn

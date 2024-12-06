@@ -1,0 +1,29 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
+from io import StringIO
+import pandas as pd
+
+app = FastAPI()
+
+
+@app.get('/')
+async def health_check():
+    return "Ineventory Management API is up and running"
+
+
+@app.get("/predict")
+async def predict(category: str):
+    try:
+        # Read the CSV data into a pandas DataFrame
+        df = pd.read_csv('./sku_df_with_predictions.csv')
+
+        # Convert the filtered DataFrame to a CSV string
+        csv_buffer = StringIO()
+        df.to_csv(csv_buffer, index=False)
+        csv_buffer.seek(0)
+
+        # Return the CSV data as a response
+        return StreamingResponse(csv_buffer, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=filtered_data.csv"})
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
