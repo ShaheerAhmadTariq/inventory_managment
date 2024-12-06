@@ -12,7 +12,7 @@ async def health_check():
 
 
 @app.get("/predict")
-async def predict(category: str):
+async def predict(category: str, time_interval: int):
     try:
         # Read the CSV data into a pandas DataFrame
         df = pd.read_csv('./sku_df_with_predictions.csv')
