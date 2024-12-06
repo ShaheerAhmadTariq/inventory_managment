@@ -6,9 +6,9 @@ import pandas as pd
 app = FastAPI()
 
 
-@app.get('/')
+@app.get('/', tags=["Root"])
 async def health_check():
-    return "Ineventory Management API is up and running"
+    return {"message":"Ineventory Management API is up and running"}
 
 
 @app.get("/predict")
