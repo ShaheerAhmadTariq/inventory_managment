@@ -162,7 +162,7 @@ cython_debug/
 .idea/
 netsuite inventory 2024-04-19T0903.csv
 TLSItemReceiptLookupResults359.csv
-models
+# models
 test_data_repl.csv
 test_data_sales.csv
 train_data_repl.csv
@@ -172,5 +172,5 @@ test.py
 replenishment.parquet
 sales.parquet
 datasets
-models
+# models
 .vercel
