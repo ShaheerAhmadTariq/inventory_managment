@@ -136,6 +136,7 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
             'Inventory_Item_Internal_ID': sku['Inventory_Item_Internal_ID'],
             'Inventory_Location_Abbreviation': sku['Inventory_Location_Abbreviation'],
             'Inventory_Size': sku['Inventory_Size'],
+            'Inventory_Product_Category': product_category,
             'Predicted_Sales_7': int(sum_7) if time_interval >= 7 else np.nan,
             'Predicted_Sales_15': int(sum_15) if time_interval >= 15 else np.nan,
             'Predicted_Sales_30': int(sum_30) if time_interval >= 30 else np.nan,
