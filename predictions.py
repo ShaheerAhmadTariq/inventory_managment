@@ -51,7 +51,7 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
     filtered_df = df[df['Inventory_Product_Category'] == product_category].copy()
 
     # Step 2: Identify unique SKUs
-    sku_columns = ['Inventory_Item_Internal_ID', 'Inventory_Location_Abbreviation', 'Inventory_Size']
+    sku_columns = ['Inventory_Item_Internal_ID', 'Inventory_Location_Abbreviation']
     unique_skus = filtered_df[sku_columns].drop_duplicates()
 
     # Initialize a list to store summary dictionaries for each SKU
@@ -62,8 +62,7 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
         # Create a filter for the current SKU
         sku_filter = (
             (filtered_df['Inventory_Item_Internal_ID'] == sku['Inventory_Item_Internal_ID']) &
-            (filtered_df['Inventory_Location_Abbreviation'] == sku['Inventory_Location_Abbreviation']) &
-            (filtered_df['Inventory_Size'] == sku['Inventory_Size'])
+            (filtered_df['Inventory_Location_Abbreviation'] == sku['Inventory_Location_Abbreviation'])
         )
 
         # Extract the DataFrame for the current SKU and sort by Date
@@ -135,7 +134,11 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
         summary = {
             'Inventory_Item_Internal_ID': sku['Inventory_Item_Internal_ID'],
             'Inventory_Location_Abbreviation': sku['Inventory_Location_Abbreviation'],
-            'Inventory_Size': sku['Inventory_Size'],
+            'Inventory_Size': X_new['Inventory_Size'].iloc[0],
+            'Inventory_Themes': X_new['Inventory_Themes'].iloc[0],
+            'Inventory_MH3_Class': X_new['Inventory_MH3_Class'].iloc[0],
+            'Inventory_MH1_Division': X_new['Inventory_MH1_Division'].iloc[0],
+            'Inventory_Lifestyle_Category': X_new['Inventory_Lifestyle_Category'].iloc[0],
             'Inventory_Product_Category': product_category,
             'Predicted_Sales_7': int(sum_7) if time_interval >= 7 else np.nan,
             'Predicted_Sales_15': int(sum_15) if time_interval >= 15 else np.nan,
