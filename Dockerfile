@@ -1,29 +1,21 @@
-# Use official Python 3.11.5 image from Docker Hub
-FROM python:3.11.5-slim
+# Use the official AWS Lambda Python base image
+FROM public.ecr.aws/lambda/python:3.11
 
 # Set the working directory in the container
-WORKDIR /app
+# WORKDIR /app
+WORKDIR /var/task
 
-# Copy the requirements.txt into the container
-COPY requirements.txt /app/
+# Copy the application requirements
+COPY requirements.txt .
 
-# Create a virtual environment in the container
-RUN python3 -m venv /app/venv
+# Install dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-# Ensure pip is up to date
-RUN /app/venv/bin/pip install --upgrade pip
+# Copy the rest of the application code
+COPY . .
 
-# Install the required dependencies inside the virtual environment
-RUN /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+# Set the correct entrypoint for the Lambda runtime
+# ENTRYPOINT ["/lambda-entrypoint.sh", "app.handler"]
+CMD ["app.handler"]
 
-# Copy the rest of the application files into the container
-COPY . /app/
-
-# Set environment variables to use the virtual environment
-ENV PATH="/app/venv/bin:$PATH"
-
-# Expose port 8000 for the FastAPI app
-EXPOSE 8000
-
-# Command to run the FastAPI app using uvicorn from the virtual environment
-CMD ["python", "app.py"]

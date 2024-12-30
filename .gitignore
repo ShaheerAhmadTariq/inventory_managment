@@ -174,3 +174,4 @@ sales.parquet
 datasets
 # models
 .vercel
+.aws-sam

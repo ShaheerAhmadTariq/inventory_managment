@@ -120,17 +120,19 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
         model = CatBoostRegressor()
         model.load_model('./models/catboost_model_2.4.cbm')
         predictions = model.predict(X_new)
-        # Sum the predictions for the first 7, 15, 30, and 60 days
-        if time_interval >= 7:
-            sum_7 = predictions[:7].sum()
-        if time_interval >= 15:
-            sum_15 = predictions[:15].sum()
-        if time_interval >= 30:
-            sum_30 = predictions[:30].sum()
-        if time_interval >= 60:
-            sum_60 = predictions[:60].sum()
 
-        # create a summary
+        predictions = np.where(predictions <= 1.5, 0, np.round(predictions))
+        # Sum the predictions for each week (1st, 2nd, ..., 8th)
+        sum_1 = predictions[:7].sum()  # Week 1 (1st week = 7 days)
+        sum_2 = predictions[7:14].sum()  # Week 2 (2nd week = days 8-14)
+        sum_3 = predictions[14:21].sum()  # Week 3 (3rd week = days 15-21)
+        sum_4 = predictions[21:28].sum()  # Week 4 (4th week = days 22-28)
+        sum_5 = predictions[28:35].sum()  # Week 5 (5th week = days 29-35)
+        sum_6 = predictions[35:42].sum()  # Week 6 (6th week = days 36-42)
+        sum_7 = predictions[42:49].sum()  # Week 7 (7th week = days 43-49)
+        sum_8 = predictions[49:56].sum()  # Week 8 (8th week = days 50-56)
+
+        # Create a summary
         summary = {
             'Inventory_Item_Internal_ID': sku['Inventory_Item_Internal_ID'],
             'Inventory_Location_Abbreviation': sku['Inventory_Location_Abbreviation'],
@@ -140,14 +142,20 @@ def inference(df: pd.DataFrame, product_category: str, time_interval: int = 60) 
             'Inventory_MH1_Division': X_new['Inventory_MH1_Division'].iloc[0],
             'Inventory_Lifestyle_Category': X_new['Inventory_Lifestyle_Category'].iloc[0],
             'Inventory_Product_Category': product_category,
-            'Predicted_Sales_7': int(sum_7) if time_interval >= 7 else np.nan,
-            'Predicted_Sales_15': int(sum_15) if time_interval >= 15 else np.nan,
-            'Predicted_Sales_30': int(sum_30) if time_interval >= 30 else np.nan,
-            'Predicted_Sales_60': int(sum_60) if time_interval >= 60 else np.nan
+            'Predicted_Sales_Week_1': int(sum_1),
+            'Predicted_Sales_Week_2': int(sum_2),
+            'Predicted_Sales_Week_3': int(sum_3),
+            'Predicted_Sales_Week_4': int(sum_4),
+            'Predicted_Sales_Week_5': int(sum_5),
+            'Predicted_Sales_Week_6': int(sum_6),
+            'Predicted_Sales_Week_7': int(sum_7),
+            'Predicted_Sales_Week_8': int(sum_8)
         }
-        # drop the rows with NaN values
-        summary = {k: v for k, v in summary.items() if not pd.isna(v)}
+
         # Append the summary
         summary_list.append(summary)
+
+        # Convert the list to a DataFrame
     summarized_predictions = pd.DataFrame(summary_list)
     return summarized_predictions
+
